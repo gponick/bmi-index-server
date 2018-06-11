@@ -48,11 +48,11 @@ class S(BaseHTTPRequestHandler):
             #print(e)
             pass
 
-        if(os.path.exists(realpath + self.path)):
-            if(time.time() - os.path.getmtime(realpath + self.path) <= (self.CACHE_TIME)):
-                print("CACHE HIT FOR: {} --> [{}]".format(self.path, time.time() - os.path.getmtime(realpath + self.path)))
+        if(os.path.exists(realpath + self.path + ".data")):
+            if(time.time() - os.path.getmtime(realpath + self.path + ".data") <= (self.CACHE_TIME)):
+                print("CACHE HIT FOR: {} --> [{}]".format(self.path, time.time() - os.path.getmtime(realpath + self.path + ".data")))
                 with open(realpath + self.path + '.code', 'r') as rc:
-                    with open(realpath + self.path,'r') as r:
+                    with open(realpath + self.path + ".data",'r') as r:
                         with open(realpath + self.path + '.headers', 'rb') as rb:
                             newheaders = pickle.loads(rb.read())
                             self.send_response(int(rc.read()))
@@ -83,7 +83,7 @@ class S(BaseHTTPRequestHandler):
         with open(os.path.join(realpath + self.path + '.code'),'w') as fc:
             fc.write(str(response.status_code))
 
-        with open(os.path.join(realpath + self.path),'w') as f:
+        with open(os.path.join(realpath + self.path + ".data"),'w') as f:
             f.write(response.text)
     #self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
