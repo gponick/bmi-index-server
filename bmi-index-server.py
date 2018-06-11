@@ -12,6 +12,16 @@ import json
 
 MYAUTH = None
 
+if(os.path.exists(os.path.join(os.path.realpath('.'),'.credentials'))):
+    with open(os.path.join(os.path.realpath('.'),'.credentials')) as setts:
+        settingsjson = setts.read()
+        newauth = json.loads(settingsjson)
+        MYAUTH=(newauth["user"],newauth["password"])
+
+print(MYAUTH[0] if MYAUTH is not None else 'NO AUTH SET')
+if not MYAUTH:
+    sys.exit(1)
+
 class S(BaseHTTPRequestHandler):
 
     # cache time in seconds
@@ -100,12 +110,7 @@ def run(server_class=HTTPServer, handler_class=S, port=8086):
     logging.basicConfig(level=logging.INFO)
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    if(os.path.exists(os.path.join(os.path.realpath('.'),'.credentials'))):
-        with open(os.path.join(os.path.realpath('.'),'.credentials')) as setts:
-            settingsjson = setts.read()
-            newauth = json.loads(settingsjson)
-            MYAUTH=(newauth["user"],newauth["password"])
-            logging.info("User: " + MYAUTH[0])
+    logging.info("User: " + MYAUTH[0])
     logging.info('Starting httpd...\n')
     try:
         httpd.serve_forever()
